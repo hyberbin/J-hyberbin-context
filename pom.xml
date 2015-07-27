@@ -12,7 +12,7 @@
     </parent>
     <dependencies>
         <dependency>
-            <groupId>org.jplus.hyberbin</groupId>
+            <groupId>org.jplus</groupId>
             <artifactId>J-hyberbin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
