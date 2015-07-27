@@ -54,8 +54,7 @@ public class ObjectContext {
     public void init(boolean needScanJar, String scanJarRegex, String scanClassPathRegex) {
         if (!initialized) {
             ScannerImpl.INSTANCE.addScanHandler(new ContextClassScanHandler(new ScannerInitializer(needScanJar, scanJarRegex, scanClassPathRegex)));
-            ScannerImpl.INSTANCE.loadClassPath();
-            ScannerImpl.INSTANCE.loadJar();
+            ScannerImpl.INSTANCE.loadAll();
             setServiceMap();
             initialized = true;
         }

@@ -21,8 +21,9 @@ package org.jplus.scanner;
  * @author hyberbin
  */
 public interface IScanner {
+    public void loadAll();
 
-    public void loadJar();
+    public void loadJar(String lib);
 
-    public void loadClassPath();
+    public void loadClassPath(String path);
 }

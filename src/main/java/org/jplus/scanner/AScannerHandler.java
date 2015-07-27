@@ -36,6 +36,14 @@ public abstract class AScannerHandler extends ClassLoader implements IScanHandle
         return path.matches(scannerInitializer.getScanClassPathRegex());
     }
 
+    protected Class<?> defineMyClass(String name, byte[] b, int off, int len){
+        try{
+            return defineClass(name, b, off, len);
+        }catch (LinkageError e){
+            return null;
+        }
+    }
+
     public ScannerInitializer getScannerInitializer() {
         return scannerInitializer;
     }

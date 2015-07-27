@@ -23,8 +23,8 @@ package org.jplus.scanner;
 public class ScannerInitializer {
 
     private  boolean needScanJar=false;
-    private  String scanJarRegex=".*jplus.*.\\.class";
-    private  String scanClassPathRegex=".*jplus.*.\\.class";
+    private  String scanJarRegex="(([^$]*))(.*jplus.*.\\.class)";
+    private  String scanClassPathRegex="(([^$]*))(.*jplus.*.\\.class)";
 
     public ScannerInitializer(boolean needScanJar, String scanJarRegex, String scanClassPathRegex) {
         this.needScanJar = needScanJar;

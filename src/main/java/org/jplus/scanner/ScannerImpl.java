@@ -43,38 +43,41 @@ public class ScannerImpl implements IScanner {
     }
 
     @Override
-    public void loadClassPath() {
-        getClassList(null);
-    }
-
-    @Override
-    public void loadJar() {
-        String[] libs = System.getProperty("java.class.path").split(";");
+    public void loadAll() {
+        String[] libs = System.getProperty("java.class.path").split(":");
         for (String lib : libs) {
-            for (IScanHandler handler : SCAN_HANDLERS) {
-                if (handler.filterJar(lib)) {
-                    log.info("loadJar jar{}", lib);
-                    try {
-                        final JarFile jar = new JarFile(lib);
-                        Enumeration entries = jar.entries();
-                        while (entries.hasMoreElements()) {
-                            final JarEntry entry = (JarEntry) entries.nextElement();
-                            InputStream input = jar.getInputStream(entry);
-                            handler.dealWith(input);
-                            if (input != null) {
-                                input.close();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        log.trace("IOException load jar class error,jar Name:{}", lib, ex);
-                    }
-                }
+            if (lib.endsWith(".jar")) {
+                loadJar(lib);
+            }else{
+                loadClassPath(lib);
             }
-
         }
     }
 
-    private void getClassList(String path) {
+    @Override
+    public void loadJar(String lib) {
+        for (IScanHandler handler : SCAN_HANDLERS) {
+            if(!handler.filterJar(lib)) continue;
+            log.info("loadJar jar:{}", lib);
+            try {
+                final JarFile jar = new JarFile(lib);
+                Enumeration entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    final JarEntry entry = (JarEntry) entries.nextElement();
+                    log.trace("loadJar JarEntry:{}", entry.getName());
+                    InputStream input = jar.getInputStream(entry);
+                    handler.dealWith(input);
+                    if (input != null) {
+                        input.close();
+                    }
+                }
+            } catch (Exception ex) {
+                log.trace("IOException load jar class error,jar Name:{}", lib, ex);
+            }
+        }
+    }
+
+    public void loadClassPath(String path) {
         if (path == null) {
             path = ScannerImpl.class.getResource("/").getPath();
         }
@@ -104,7 +107,7 @@ public class ScannerImpl implements IScanner {
         });
         if (listFiles != null) {
             for (File searchedFile : listFiles) {
-                getClassList(searchedFile.getPath());
+                loadClassPath(searchedFile.getPath());
             }
         }
     }
@@ -112,5 +115,7 @@ public class ScannerImpl implements IScanner {
     public void addScanHandler(IScanHandler scanHandler) {
         SCAN_HANDLERS.add(scanHandler);
     }
+
+
 
 }
