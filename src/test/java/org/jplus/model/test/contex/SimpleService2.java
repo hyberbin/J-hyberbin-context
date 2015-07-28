@@ -23,7 +23,7 @@ import org.jplus.annotation.Service;
  * @author hyberbin
  */
 @Service
-public class SimpleService2 {
+public class SimpleService2 implements IService{
 
     public void out() {
         System.out.println("SimpleService2.out");

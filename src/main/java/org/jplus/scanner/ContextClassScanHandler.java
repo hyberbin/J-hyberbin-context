@@ -32,13 +32,9 @@ public class ContextClassScanHandler extends AScannerHandler {
     }
 
     @Override
-    public void dealWith(InputStream is) throws Exception {
-        byte[] copyToByteArray = FileCopyUtils.copyToByteArray(is);
-        Class defineClass = defineMyClass(null, copyToByteArray, 0, copyToByteArray.length);
-        if(defineClass!=null){
-            Class clazz = Class.forName(defineClass.getName());//如果不调用这个不能初始化
-            ObjectContext.CONTEXT.addClass(clazz);
-        }
+    public void dealWith(InputStream is,String filePath,String packagePath) throws Exception {
+        Class clazz = Class.forName(packagePath);
+        ObjectContext.CONTEXT.addClass(clazz);
     }
 
 }

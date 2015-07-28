@@ -19,6 +19,7 @@ package org.jplus.contex.core;
 import org.jplus.annotation.Autowired;
 import org.jplus.annotation.Resource;
 import org.jplus.annotation.Service;
+import org.jplus.contex.aop.ResourceProxy;
 import org.jplus.hyb.log.Logger;
 import org.jplus.hyb.log.LoggerManager;
 import org.jplus.scanner.ContextClassScanHandler;
@@ -37,7 +38,9 @@ import java.util.*;
 public class ObjectContext {
 
     private static final Logger log = LoggerManager.getLogger(ObjectContext.class);
-    private final Map<String, Object> serviceNameMap = new HashMap<String, Object>();
+    private final Map<String, Object> serviceNameMap = new HashMap<String, Object>(){
+
+    };
     private final Map<Class, Object> serviceClassMap = new HashMap<Class, Object>();
     private List<Class> classList = new ArrayList<Class>();
     private boolean initialized = false;
@@ -153,11 +156,12 @@ public class ObjectContext {
                     resourceName = field.getName();
                 }
                 try {
-                    Object resource = getResource(resourceName);
-                    if (resource == null) {
+                    Object resourceField = getResource(resourceName);
+                    if (resourceField == null) {
                         log.error("注射类：{}中的{}字段值为空", object.getClass().getName(), field.getName());
                         return null;
                     }
+                    Object resource = field.getType().isInterface() ? new ResourceProxy().bind(field.getType(),resourceField): resourceField;
                     field.set(object, resource);
                 } catch (Exception ex) {
                     log.error("注射类：{}中的{}字段时出错", ex, object.getClass().getName(), field.getName());

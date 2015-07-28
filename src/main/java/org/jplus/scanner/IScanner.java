@@ -23,7 +23,7 @@ package org.jplus.scanner;
 public interface IScanner {
     public void loadAll();
 
-    public void loadJar(String lib);
+    public void loadJar(String lib,String basePath);
 
-    public void loadClassPath(String path);
+    public void loadClassPath(String path,String basePath);
 }

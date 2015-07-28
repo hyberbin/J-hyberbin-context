@@ -31,5 +31,5 @@ public interface IScanHandler {
 
     public boolean filterPath(String path);
 
-    public void dealWith(InputStream is) throws Exception;
+    public void dealWith(InputStream is,String filePath,String packagePath) throws Exception;
 }

@@ -19,7 +19,7 @@ package org.jplus.scanner;
 /**
  * Created by hyberbin on 2015/7/10.
  */
-public abstract class AScannerHandler extends ClassLoader implements IScanHandler{
+public abstract class AScannerHandler implements IScanHandler{
     private final ScannerInitializer scannerInitializer;
 
     public AScannerHandler(ScannerInitializer scannerInitializer) {
@@ -36,13 +36,6 @@ public abstract class AScannerHandler extends ClassLoader implements IScanHandle
         return path.matches(scannerInitializer.getScanClassPathRegex());
     }
 
-    protected Class<?> defineMyClass(String name, byte[] b, int off, int len){
-        try{
-            return defineClass(name, b, off, len);
-        }catch (LinkageError e){
-            return null;
-        }
-    }
 
     public ScannerInitializer getScannerInitializer() {
         return scannerInitializer;

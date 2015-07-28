@@ -22,9 +22,9 @@ package org.jplus.scanner;
  */
 public class ScannerInitializer {
 
-    private  boolean needScanJar=false;
-    private  String scanJarRegex="(([^$]*))(.*jplus.*.\\.class)";
-    private  String scanClassPathRegex="(([^$]*))(.*jplus.*.\\.class)";
+    private  boolean needScanJar=false;//是否需要扫描jar包
+    private  String scanJarRegex="*";//jar包路径的正则表达式
+    private  String scanClassPathRegex="(([^$]*))(.*jplus.*.\\.class)";//扫描类路径的正则表达式,路径中不能带有$符并且以.class结尾
 
     public ScannerInitializer(boolean needScanJar, String scanJarRegex, String scanClassPathRegex) {
         this.needScanJar = needScanJar;

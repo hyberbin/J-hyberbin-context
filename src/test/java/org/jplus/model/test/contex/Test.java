@@ -17,6 +17,7 @@
 package org.jplus.model.test.contex;
 
 import org.jplus.contex.core.ObjectContext;
+import org.jplus.hyb.log.LocalLogger;
 
 /**
  *
@@ -25,8 +26,9 @@ import org.jplus.contex.core.ObjectContext;
 public class Test {
 
     public static void main(String[] args) {
+        LocalLogger.setLevel(LocalLogger.INFO);
         ObjectContext.CONTEXT.init();
-        Service2 resource = ObjectContext.CONTEXT.getResource("Service2");
+        Service2 resource = (Service2)ObjectContext.CONTEXT.getResource("Service2");
         resource.out();
     }
 }

@@ -24,14 +24,14 @@ import org.jplus.annotation.Service;
  * @author hyberbin
  */
 @Service
-public class Service2 {
+public class Service2 implements IService{
 
     @Resource
-    private SimpleService1 simpleService1;
+    private IService simpleService1;
     @Resource
-    private Service1 service1;
+    private IService service1;
     @Resource
-    private SimpleService2 simpleService2;
+    private IService simpleService2;
 
     public void out() {
         simpleService1.out();

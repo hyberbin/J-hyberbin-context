@@ -16,6 +16,7 @@
  */
 package org.jplus.model.test.contex;
 
+import org.jplus.annotation.AopMethodBefore;
 import org.jplus.annotation.Autowired;
 import org.jplus.annotation.Resource;
 import org.jplus.annotation.Service;
@@ -25,17 +26,17 @@ import org.jplus.annotation.Service;
  * @author hyberbin
  */
 @Service
-public class Service1 {
+public class Service1 implements IService{
 
     @Resource
-    private SimpleService1 simpleService1;
-    private final SimpleService2 simpleService2;
+    private IService simpleService1;
+    private final IService simpleService2;
 
     @Autowired
     public Service1(SimpleService2 simpleService2) {
         this.simpleService2 = simpleService2;
     }
-
+    @AopMethodBefore(aopHandler=AopHandlerImpl.class)
     public void out() {
         simpleService1.out();
         simpleService2.out();
