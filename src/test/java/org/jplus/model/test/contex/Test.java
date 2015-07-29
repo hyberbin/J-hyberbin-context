@@ -27,7 +27,7 @@ public class Test {
 
     public static void main(String[] args) {
         LocalLogger.setLevel(LocalLogger.INFO);
-        ObjectContext.CONTEXT.init();
+        ObjectContext.CONTEXT.init(false,".*","([^$]).*class");
         Service2 resource = (Service2)ObjectContext.CONTEXT.getResource("Service2");
         resource.out();
     }

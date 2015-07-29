@@ -19,7 +19,7 @@ package org.jplus.scanner;
 import java.io.InputStream;
 
 /**
- *
+ * 处理资源的接口.
  * @author hyberbin
  */
 public interface IScanHandler {
@@ -27,9 +27,26 @@ public interface IScanHandler {
     public static final String VAR_SCAN_JAR_REGEX = "scanJarRegex";
     public static final String VAR_SCAN_CLASSPATH_REGEX = "scanClassPathRegex";
 
+    /**
+     * jar包过滤器.
+     * @param path jar包路径和包名.
+     * @return
+     */
     public boolean filterJar(String path);
 
+    /**
+     * 类路径过滤器.
+     * @param path 类路径和包名.
+     * @return
+     */
     public boolean filterPath(String path);
 
+    /**
+     * 处理资源的方法.
+     * @param is 资源文件流.
+     * @param filePath 资源路径.
+     * @param packagePath 资源包完整路径例如org.jplus.scanner.IScanHandler,如果是class文件去掉后缀.
+     * @throws Exception
+     */
     public void dealWith(InputStream is,String filePath,String packagePath) throws Exception;
 }

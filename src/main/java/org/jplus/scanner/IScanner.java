@@ -17,13 +17,25 @@
 package org.jplus.scanner;
 
 /**
- *
+ *扫描运行环境中所有类和资源文件的接口.
  * @author hyberbin
  */
 public interface IScanner {
+    /**
+     * 扫描类和jar包中的内容.
+     */
     public void loadAll();
 
-    public void loadJar(String lib,String basePath);
+    /**
+     * 扫描jar中的内容.
+     * @param lib jar包的绝对路径.
+     */
+    public void loadJar(String lib);
 
+    /**
+     * 扫描文件夹中的内容.
+     * @param path 类路径.
+     * @param basePath 根路径.
+     */
     public void loadClassPath(String path,String basePath);
 }

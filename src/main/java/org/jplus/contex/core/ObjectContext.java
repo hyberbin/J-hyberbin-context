@@ -33,14 +33,15 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * 资源缓存容器类.
+ * 可以按类型或者资源名称获取唯一的资源.
+ * 暂不支持按类型获取多个资源.
  * @author hyberbin
  */
 public class ObjectContext {
 
     private static final Logger log = LoggerManager.getLogger(ObjectContext.class);
-    private final Map<String, Object> serviceNameMap = new HashMap<String, Object>(){
-
-    };
+    private final Map<String, Object> serviceNameMap = new HashMap<String, Object>();
     private final Map<Class, Object> serviceClassMap = new HashMap<Class, Object>();
     private List<Class> classList = new ArrayList<Class>();
     private boolean initialized = false;
@@ -50,10 +51,20 @@ public class ObjectContext {
 
     }
 
+    /**
+     * 默认只扫描类路径带jplus的类,并且不扫描jar包.
+     * 用户可自行定义扫描内容
+     */
     public void init() {
-        init(false, ".*jplus.*.\\.class", ".*jplus.*.\\.class");
+        init(false, ".*", "([^$]).*class");
     }
 
+    /**
+     * 按用户定义的扫描规则来扫描资源
+     * @param needScanJar 是否扫描jar包
+     * @param scanJarRegex 包名的正则表达式
+     * @param scanClassPathRegex 类路径的正则表达式
+     */
     public void init(boolean needScanJar, String scanJarRegex, String scanClassPathRegex) {
         if (!initialized) {
             ScannerImpl.INSTANCE.addScanHandler(new ContextClassScanHandler(new ScannerInitializer(needScanJar, scanJarRegex, scanClassPathRegex)));
@@ -103,7 +114,7 @@ public class ObjectContext {
                                     log.debug("set service:{} again by class", classe.getName());
                                     ((Collection) serviceGet).add(service);
                                 } else {
-                                    log.debug("tiwce set service:{} by class", classe.getName());
+                                    log.debug("twice set service:{} by class", classe.getName());
                                     Collection set = new HashSet();
                                     set.add(serviceGet);
                                     set.add(service);
