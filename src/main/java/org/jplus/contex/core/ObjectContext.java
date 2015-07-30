@@ -34,8 +34,8 @@ import java.util.*;
 
 /**
  * 资源缓存容器类.
- * 可以按类型或者资源名称获取唯一的资源.
- * 暂不支持按类型获取多个资源.
+ * 可以按类型或者资源名称获取一个或者多个资源.
+ * 支持按类型获取多个资源.
  * @author hyberbin
  */
 public class ObjectContext {
@@ -94,33 +94,13 @@ public class ObjectContext {
                         serviceSet.add(clazz);
                     } else {
                         seted = true;
-                        Object get = serviceNameMap.get(resourceName);
+                        Object get = getResource(resourceName);
                         if (get == null) {
                             log.debug("first set service:{} by name", resourceName);
-                            serviceNameMap.put(resourceName, service);
+                            addResource(resourceName, service);
                         } else {
                             log.error("dumplicate  service:{} by name", resourceName);
                             return;
-                        }
-                        List<Class> classes = new ArrayList<Class>(Arrays.asList(clazz.getClasses()));
-                        classes.add(clazz);
-                        for (Class classe : classes) {
-                            if (!classe.equals(Object.class)) {
-                                Object serviceGet = serviceClassMap.get(classe);
-                                if (serviceGet == null) {
-                                    log.debug("first set service:{} by class", classe.getName());
-                                    serviceClassMap.put(classe, service);
-                                } else if (serviceGet instanceof Collection) {
-                                    log.debug("set service:{} again by class", classe.getName());
-                                    ((Collection) serviceGet).add(service);
-                                } else {
-                                    log.debug("twice set service:{} by class", classe.getName());
-                                    Collection set = new HashSet();
-                                    set.add(serviceGet);
-                                    set.add(service);
-                                    serviceClassMap.put(classe, set);
-                                }
-                            }
                         }
                     }
                 }
@@ -194,7 +174,7 @@ public class ObjectContext {
         if (get == null) {
             log.error("找不到名称为：{}的对象！", name);
             return null;
-        } else if (get instanceof Map) {
+        } else if (get instanceof Collection) {
             log.error("名称为：{}的对象不只一个！", name);
             return null;
         }
@@ -213,7 +193,7 @@ public class ObjectContext {
         if (get == null) {
             log.error("找不到类型为：{}的对象！", clazz.getName());
             return null;
-        } else if (get instanceof Map) {
+        } else if (get instanceof Collection) {
             log.error("类型为：{}的对象不只一个！", clazz.getName());
             return null;
         }
@@ -240,23 +220,50 @@ public class ObjectContext {
         }
     }
 
-    public void setService(Class clazz, Object object) {
-        serviceClassMap.put(clazz, object);
-        classList.add(clazz);
+    /**
+     * 添加一个以类名为索引的资源对象.
+     * @param clazz 资源类型.
+     * @param object 资源对象.
+     */
+    public void addResource(Class clazz, Object object) {
         serviceNameMap.put(clazz.getName(), object);
-    }
-
-    public void setService(String clazz, Object object) {
-        try {
-            Class<?> aClass = Class.forName(clazz);
-            serviceClassMap.put(aClass, object);
-            serviceNameMap.put(clazz, object);
-            classList.add(aClass);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        List<Class> classes = new ArrayList<Class>(Arrays.asList(clazz.getClasses()));
+        classes.add(clazz);
+        classes.addAll(Arrays.asList(clazz.getInterfaces()));
+        for (Class classe : classes) {
+            if (!classe.equals(Object.class)) {
+                Object serviceGet = getResource(classe);
+                if (serviceGet == null) {
+                    log.debug("first set service:{} by class", classe.getName());
+                    serviceClassMap.put(classe, object);
+                } else if (serviceGet instanceof Collection) {
+                    log.debug("set service:{} again by class", classe.getName());
+                    ((Collection) serviceGet).add(object);
+                } else {
+                    log.debug("twice set service:{} by class", classe.getName());
+                    Collection set = new HashSet();
+                    set.add(serviceGet);
+                    set.add(object);
+                    serviceClassMap.put(classe, set);
+                }
+            }
         }
     }
 
+    /**
+     * 以资源名称为索引添加资源.
+     * @param resourceName 资源名称.
+     * @param object 资源对象.
+     */
+    public void addResource(String resourceName, Object object) {
+        serviceNameMap.put(resourceName, object);
+        addResource(object.getClass(),object);
+    }
+
+    /**
+     * 添加一个待添加资源的类.
+     * @param clazz
+     */
     public void addClass(Class clazz) {
         classList.add(clazz);
     }

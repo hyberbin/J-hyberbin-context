@@ -19,6 +19,8 @@ package org.jplus.model.test.contex;
 import org.jplus.contex.core.ObjectContext;
 import org.jplus.hyb.log.LocalLogger;
 
+import java.util.Collection;
+
 /**
  *
  * @author hyberbin
@@ -29,6 +31,8 @@ public class Test {
         LocalLogger.setLevel(LocalLogger.INFO);
         ObjectContext.CONTEXT.init(false,".*","([^$]).*class");
         Service2 resource = (Service2)ObjectContext.CONTEXT.getResource("Service2");
+        Collection resources = ObjectContext.CONTEXT.getResources(IService.class);
         resource.out();
+        System.out.println(resources.size());
     }
 }
