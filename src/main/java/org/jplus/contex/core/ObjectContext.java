@@ -152,7 +152,7 @@ public class ObjectContext {
                         log.error("注射类：{}中的{}字段值为空", object.getClass().getName(), field.getName());
                         return null;
                     }
-                    Object resource = field.getType().isInterface() ? new ResourceProxy().bind(field.getType(),resourceField): resourceField;
+                    Object resource = field.getType().isInterface() ? new ResourceProxy().bind(resourceField): resourceField;
                     field.set(object, resource);
                 } catch (Exception ex) {
                     log.error("注射类：{}中的{}字段时出错", ex, object.getClass().getName(), field.getName());
@@ -221,9 +221,9 @@ public class ObjectContext {
     }
 
     /**
-     * 添加一个以类名为索引的资源对象.
-     * @param clazz 资源类型.
-     * @param object 资源对象.
+     * 添加一个以类名为索引的资源对象
+     * @param clazz 资源类型
+     * @param object 资源对象
      */
     public void addResource(Class clazz, Object object) {
         serviceNameMap.put(clazz.getName(), object);
@@ -250,20 +250,11 @@ public class ObjectContext {
         }
     }
 
-    /**
-     * 以资源名称为索引添加资源.
-     * @param resourceName 资源名称.
-     * @param object 资源对象.
-     */
     public void addResource(String resourceName, Object object) {
         serviceNameMap.put(resourceName, object);
         addResource(object.getClass(),object);
     }
 
-    /**
-     * 添加一个待添加资源的类.
-     * @param clazz
-     */
     public void addClass(Class clazz) {
         classList.add(clazz);
     }

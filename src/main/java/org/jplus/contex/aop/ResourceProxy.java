@@ -47,11 +47,12 @@ public class ResourceProxy implements InvocationHandler {
     /**
      * 绑定委托对象并返回一个代理类
      *
-     * @param clazz
+     * @param target
      * @return
      */
-    public Object bind(Class clazz,Object target) {
+    public Object bind(Object target) {
         this.target=target;
+        Class clazz=target.getClass();
         if(clazz.isAnnotationPresent(AopClassBefore.class)){//扫描在类初始化的时候的切入点
             AopClassBefore annotation =(AopClassBefore) clazz.getAnnotation(AopClassBefore.class);
             Class handler=annotation.aopHandler();
@@ -63,7 +64,7 @@ public class ResourceProxy implements InvocationHandler {
             }
         }
         scanMethod(target);//扫描在类中所有方法上的切入点
-        Object instance = Proxy.newProxyInstance(ResourceProxy.class.getClassLoader(), new Class[]{clazz}, this);
+        Object instance = Proxy.newProxyInstance(ResourceProxy.class.getClassLoader(), clazz.getInterfaces(), this);
         AopHandler aopHandler = CLASS_AOP_BEFORE.get(clazz);
         if(aopHandler!=null){
             try {//执行切入动作
@@ -101,12 +102,12 @@ public class ResourceProxy implements InvocationHandler {
                         setMethodAopAfter(method_, (AopHandler) Reflections.instance(handler.getName()));
                     }
                     for(AopPointRegex aopPointRegex:METHOD_AOP_BEFORE_POINT_REGEXES){
-                        if(className.matches(aopPointRegex.getClassRegex())&&method.getName().matches(aopPointRegex.getMethodRegex())){
+                        if((interface_.getName().matches(aopPointRegex.getClassRegex())||className.matches(aopPointRegex.getClassRegex()))&&method.getName().matches(aopPointRegex.getMethodRegex())){
                             setMethodAopBefore(method_, (AopHandler) Reflections.instance(aopPointRegex.getHandler()));
                         }
                     }
                     for(AopPointRegex aopPointRegex:METHOD_AOP_AFTER_POINT_REGEXES){
-                        if(className.matches(aopPointRegex.getClassRegex())&&method.getName().matches(aopPointRegex.getMethodRegex())){
+                        if((interface_.getName().matches(aopPointRegex.getClassRegex())||className.matches(aopPointRegex.getClassRegex()))&&method.getName().matches(aopPointRegex.getMethodRegex())){
                             setMethodAopAfter(method_, (AopHandler) Reflections.instance(aopPointRegex.getHandler()));
                         }
                     }
